@@ -1,4 +1,4 @@
-package com.illustrationfinder.searchengine;
+package com.illustrationfinder.searchengine.google;
 
 /**
  * Created by alombard on 19/11/2015.

@@ -1,6 +1,7 @@
-package com.illustrationfinder.searchengine;
+package com.illustrationfinder.searchengine.google;
 
 import com.google.gson.Gson;
+import com.illustrationfinder.searchengine.ISearchEngine;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

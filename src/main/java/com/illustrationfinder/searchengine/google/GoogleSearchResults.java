@@ -1,4 +1,4 @@
-package com.illustrationfinder.searchengine;
+package com.illustrationfinder.searchengine.google;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class GoogleSearchResults {
         return "ResponseData[" + responseData + "]";
     }
 
-    static class ResponseData {
+    public static class ResponseData {
         private List<Result> results;
 
         public List<Result> getResults() {
@@ -36,7 +36,7 @@ public class GoogleSearchResults {
         }
     }
 
-    static class Result {
+    public static class Result {
         private String url;
         private String title;
 
