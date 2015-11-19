@@ -16,10 +16,14 @@ public class GoogleSearchEngineTest {
     public void testSearch() throws IOException {
         final GoogleSearchParameters parameters = new GoogleSearchParameters();
         parameters.setKeywords("Tomato");
+        parameters.setDomain(GoogleSearchParameters.Domain.IMAGES);
 
         final ISearchEngine<GoogleSearchParameters, GoogleSearchResults> searchEngine = new GoogleSearchEngine();
         final GoogleSearchResults results = searchEngine.search(parameters);
 
-
+        for(GoogleSearchResults.Result result : results.getResponseData().getResults()) {
+            System.out.println(result.getTitle());
+            System.out.println(result.getUrl());
+        }
     }
 }

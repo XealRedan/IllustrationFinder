@@ -1,11 +1,14 @@
 package com.illustrationfinder.searchengine.google;
 
+import com.illustrationfinder.searchengine.ISearchEngineResults;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by alombard on 19/11/2015.
  */
-public class GoogleSearchResults {
+public class GoogleSearchResults implements ISearchEngineResults {
     private ResponseData responseData;
 
     public ResponseData getResponseData() {
@@ -16,6 +19,19 @@ public class GoogleSearchResults {
         this.responseData = responseData;
     }
 
+    @Override
+    public List<String> getResults() {
+        if(this.responseData == null)
+            return null;
+
+        final List<String> results = new ArrayList<>();
+
+        this.responseData.getResults().forEach(r -> results.add(r.getUrl()));
+
+        return results;
+    }
+
+    @Override
     public String toString() {
         return "ResponseData[" + responseData + "]";
     }

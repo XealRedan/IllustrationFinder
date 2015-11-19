@@ -3,6 +3,7 @@ package com.illustrationfinder.aspects.logging;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 
 import java.util.logging.Logger;
 
@@ -13,8 +14,8 @@ import java.util.logging.Logger;
 public class SearchLoggingAspect {
     private static final String SEARCH_LOGGER_NAME = "Search";
 
-    @After("args(search) && execution(* com.illustrationfinder.searchengine.ISearchEngine.search(Object))")
-    void logAfterSearch(JoinPoint joinPoint, Object search) {
-        Logger.getLogger(SEARCH_LOGGER_NAME).info(search.toString() + " researched using " + joinPoint.getThis().toString());
+    @Before("args(search) && execution(* com.illustrationfinder.searchengine.ISearchEngine.search(Object))")
+    public void logBeforeSearch(JoinPoint joinPoint, Object search) {
+        Logger.getLogger(SEARCH_LOGGER_NAME).info("Researching \"" + search.toString() + "\" using " + joinPoint.getThis().toString());
     }
 }
