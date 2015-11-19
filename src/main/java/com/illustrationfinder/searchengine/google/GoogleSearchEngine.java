@@ -13,9 +13,9 @@ import java.net.URLEncoder;
  * Created by alombard on 19/11/2015.
  */
 public class GoogleSearchEngine implements ISearchEngine<GoogleSearchParameters, GoogleSearchResults> {
-    private final String GOOGLE_WEB_URL = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=";
-    private final String GOOGLE_IMAGES_URL = "http://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=";
-    private final String CHARSET = "UTF-8";
+    private static final String GOOGLE_WEB_URL = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=";
+    private static final String GOOGLE_IMAGES_URL = "http://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=";
+    private static final String CHARSET = "UTF-8";
 
     @Override
     public GoogleSearchResults search(GoogleSearchParameters googleSearchParameters) throws IOException {
