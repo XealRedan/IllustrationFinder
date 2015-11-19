@@ -9,6 +9,10 @@
 <html>
   <head>
     <title>$Title$</title>
+    <link rel='stylesheet' href='<%= org.webjars.WebJarAssetLocator.getWebJar("css/bootstrap.min.css") %>'>
+    <link rel='stylesheet' href='<%= org.webjars.WebJarAssetLocator.getWebJar("css/bootstrap-theme.min.css") %>'>
+    <script type='text/javascript' src='<%= org.webjars.WebJarAssetLocator.getWebJar("jquery.min.js") %>'></script>
+    <script type='text/javascript' src='<%= org.webjars.WebJarAssetLocator.getWebJar("js/bootstrap.min.js") %>'></script>
   </head>
   <body>
   $END$
