@@ -25,6 +25,7 @@ import de.l3s.boilerpipe.BoilerpipeProcessingException;
 import de.l3s.boilerpipe.extractors.ArticleExtractor;
 
 import java.net.URL;
+import java.security.Key;
 
 /**
  * Post processor for HTML posts
@@ -62,7 +63,9 @@ public class HtmlPostProcessor implements IPostProcessor {
             // Retrieve the document and save it temporary
             final String articleText = ArticleExtractor.getInstance().getText(this.url);
 
+            final KeywordExtractor keywordExtractor = new KeywordExtractor();
 
+            return keywordExtractor.getKeywords(articleText);
         } catch (BoilerpipeProcessingException e) {
             // TODO
             e.printStackTrace();

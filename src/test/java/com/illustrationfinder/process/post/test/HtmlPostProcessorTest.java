@@ -1,6 +1,7 @@
 package com.illustrationfinder.process.post.test;
 
 import com.illustrationfinder.process.post.HtmlPostProcessor;
+import com.illustrationfinder.process.post.KeywordExtractor;
 import org.junit.Test;
 
 import java.net.MalformedURLException;
