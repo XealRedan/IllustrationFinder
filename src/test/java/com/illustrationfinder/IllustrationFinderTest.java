@@ -25,8 +25,10 @@ public class IllustrationFinderTest {
 
         final GoogleSearchResults searchResults = searchEngine.search(searchParameters);
 
-        for(final String result : searchResults.getResults()) {
+        final IllustrationFinder illustrationFinder = new IllustrationFinder();
+        illustrationFinder.setPostProcessor(postProcessor);
+        illustrationFinder.setSearchEngine(searchEngine);
 
-        }
+
     }
 }
