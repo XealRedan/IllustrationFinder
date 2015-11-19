@@ -1,4 +1,4 @@
-package com.illustrationfinder.process.searchengine;
+package com.illustrationfinder.process.post;
 
 /*
  * #%L
@@ -21,11 +21,37 @@ package com.illustrationfinder.process.searchengine;
  */
 
 
-import java.util.List;
+import java.net.URL;
 
 /**
- *
+ * Post processor for WordPress posts
  */
-public interface ISearchEngineResults {
-    List<String> getResults();
+public class WordPressPostProcessor implements IPostProcessor {
+
+    private URL url;
+
+    public WordPressPostProcessor() {
+
+    }
+
+    /**
+     * Build a WordPressPostProcessor for the given url
+     * @param url the post URL
+     */
+    public WordPressPostProcessor(URL url) {
+        this.url = url;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    @Override
+    public String generateKeywords() {
+        return null;
+    }
 }

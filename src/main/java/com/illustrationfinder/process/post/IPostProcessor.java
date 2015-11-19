@@ -1,4 +1,4 @@
-package com.illustrationfinder.process.searchengine;
+package com.illustrationfinder.process.post;
 
 /*
  * #%L
@@ -21,11 +21,9 @@ package com.illustrationfinder.process.searchengine;
  */
 
 
-import java.util.List;
-
 /**
- *
+ * Interface implemented by all post processors
  */
-public interface ISearchEngineResults {
-    List<String> getResults();
+public interface IPostProcessor {
+    String generateKeywords();
 }
