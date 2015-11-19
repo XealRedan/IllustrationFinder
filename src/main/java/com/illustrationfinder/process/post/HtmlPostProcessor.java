@@ -21,34 +21,20 @@ package com.illustrationfinder.process.post;
  */
 
 
-import com.entopix.maui.filters.MauiFilter;
-import com.entopix.maui.main.MauiModelBuilder;
-import com.entopix.maui.main.MauiTopicExtractor;
-import com.entopix.maui.util.MauiDocument;
-import com.entopix.maui.util.MauiTopics;
-import com.entopix.maui.util.Topic;
 import de.l3s.boilerpipe.BoilerpipeProcessingException;
 import de.l3s.boilerpipe.extractors.ArticleExtractor;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Post processor for HTML posts
  */
 public class HtmlPostProcessor implements IPostProcessor {
 
-    private MauiModelBuilder modelBuilder = new MauiModelBuilder();
-    private MauiTopicExtractor topicExtractor = new MauiTopicExtractor();
-
     private URL url;
 
     public HtmlPostProcessor() {
-
+        //
     }
 
     /**
@@ -73,28 +59,11 @@ public class HtmlPostProcessor implements IPostProcessor {
             return null;
 
         try {
+            // Retrieve the document and save it temporary
             final String articleText = ArticleExtractor.getInstance().getText(this.url);
-            final List<MauiDocument> documentList = new ArrayList<>();
 
-            documentList.add(new MauiDocument(this.url.getFile(), this.url.getPath(), articleText, ""));
 
-            final MauiFilter model = this.modelBuilder.buildModel();
-            this.topicExtractor.setModel(model);
-            final List<MauiTopics> topics = this.topicExtractor.extractTopics(documentList);
-
-            final StringBuilder keywordsStringBuilder = new StringBuilder();
-
-            for(MauiTopics mauiTopic : topics) {
-                for(Topic topic : mauiTopic.getTopics()) {
-                    keywordsStringBuilder.append(topic.getTitle() + " ");
-                }
-            }
-
-            return keywordsStringBuilder.toString().trim();
         } catch (BoilerpipeProcessingException e) {
-            // TODO
-            e.printStackTrace();
-        } catch (MauiFilter.MauiFilterException e) {
             // TODO
             e.printStackTrace();
         }
