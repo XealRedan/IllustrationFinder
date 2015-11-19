@@ -15,6 +15,9 @@
     <script type='text/javascript' src='<%= org.webjars.WebJarAssetLocator.getWebJar("js/bootstrap.min.js") %>'></script>
   </head>
   <body>
+    <div class="container">
+        Illustration Finder
+    </div>
   $END$
   </body>
 </html>
