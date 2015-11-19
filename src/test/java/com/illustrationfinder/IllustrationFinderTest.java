@@ -22,7 +22,7 @@ package com.illustrationfinder;
 
 
 import com.illustrationfinder.process.post.IPostProcessor;
-import com.illustrationfinder.process.post.WordPressPostProcessor;
+import com.illustrationfinder.process.post.HtmlPostProcessor;
 import com.illustrationfinder.process.searchengine.google.GoogleSearchEngine;
 import com.illustrationfinder.process.searchengine.google.GoogleSearchParameters;
 import com.illustrationfinder.process.searchengine.google.GoogleSearchResults;
@@ -34,7 +34,7 @@ import java.io.IOException;
  */
 public class IllustrationFinderTest {
     public void testIllustrationFinder() throws IOException {
-        final IPostProcessor postProcessor = new WordPressPostProcessor();
+        final IPostProcessor postProcessor = new HtmlPostProcessor();
         final String keywords = postProcessor.generateKeywords();
 
         final GoogleSearchEngine searchEngine = new GoogleSearchEngine();
