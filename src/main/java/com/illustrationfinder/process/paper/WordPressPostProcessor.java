@@ -6,19 +6,19 @@ import java.net.URL;
  * Created by alombard on 19/11/2015.
  * Paper processor for WordPress articles
  */
-public class WordPressPaperProcessor implements IPaperProcessor {
+public class WordPressPostProcessor implements IPostProcessor {
 
     private URL url;
 
-    public WordPressPaperProcessor() {
+    public WordPressPostProcessor() {
 
     }
 
     /**
-     * Build a WordPressPaperProcessor for the given url
+     * Build a WordPressPostProcessor for the given url
      * @param url the paper URL
      */
-    public WordPressPaperProcessor(URL url) {
+    public WordPressPostProcessor(URL url) {
         this.url = url;
     }
 

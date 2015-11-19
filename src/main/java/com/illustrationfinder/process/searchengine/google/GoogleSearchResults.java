@@ -1,6 +1,6 @@
-package com.illustrationfinder.searchengine.google;
+package com.illustrationfinder.process.searchengine.google;
 
-import com.illustrationfinder.searchengine.ISearchEngineResults;
+import com.illustrationfinder.process.searchengine.ISearchEngineResults;
 
 import java.util.ArrayList;
 import java.util.List;

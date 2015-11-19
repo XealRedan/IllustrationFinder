@@ -1,8 +1,6 @@
-package com.illustrationfinder.searchengine;
+package com.illustrationfinder.process.searchengine;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 
 /**
  * Created by alombard on 19/11/2015.

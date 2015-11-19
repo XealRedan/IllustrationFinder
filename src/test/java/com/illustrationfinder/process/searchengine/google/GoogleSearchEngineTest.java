@@ -1,9 +1,6 @@
-package com.illustrationfinder.searchengine.google;
+package com.illustrationfinder.process.searchengine.google;
 
-import com.illustrationfinder.searchengine.ISearchEngine;
-import com.illustrationfinder.searchengine.google.GoogleSearchEngine;
-import com.illustrationfinder.searchengine.google.GoogleSearchParameters;
-import com.illustrationfinder.searchengine.google.GoogleSearchResults;
+import com.illustrationfinder.process.searchengine.ISearchEngine;
 import org.junit.Test;
 
 import java.io.IOException;

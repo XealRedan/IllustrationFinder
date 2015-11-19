@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class SearchLoggingAspect {
     private static final String SEARCH_LOGGER_NAME = "Search";
 
-    @Before("args(search) && execution(* com.illustrationfinder.searchengine.ISearchEngine.search(Object))")
+    @Before("args(search) && execution(* com.illustrationfinder.process.searchengine.ISearchEngine.search(Object))")
     public void logBeforeSearch(JoinPoint joinPoint, Object search) {
         Logger.getLogger(SEARCH_LOGGER_NAME).info("Researching \"" + search.toString() + "\" using " + joinPoint.getThis().toString());
     }

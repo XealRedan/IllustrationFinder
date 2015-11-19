@@ -1,4 +1,4 @@
-package com.illustrationfinder.searchengine;
+package com.illustrationfinder.process.searchengine;
 
 import java.util.List;
 
