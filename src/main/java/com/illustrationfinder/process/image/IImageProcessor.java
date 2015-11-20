@@ -24,6 +24,23 @@ package com.illustrationfinder.process.image;
 /**
  * Interface implemented by all images processors
  */
-public interface IImageProcessor<ImageType> {
+public interface IImageProcessor<ImageType, ImageFilter> {
+    /**
+     * Sets the automatic filter
+     * @param automatic <code>true</code> for automatic filtering, <code>false</code> otherwise
+     */
+    void setAutomaticFilter(boolean automatic);
+
+    /**
+     * Sets the filter
+     * @param filter the filter to use
+     */
+    void setFilter(ImageFilter filter);
+
+    /**
+     * Process an image
+     * @param image the image
+     * @return the processed image
+     */
     ImageType process(ImageType image);
 }

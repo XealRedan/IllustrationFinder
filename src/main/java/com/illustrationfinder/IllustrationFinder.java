@@ -26,8 +26,15 @@ import com.illustrationfinder.process.post.IPostProcessor;
 import com.illustrationfinder.process.searchengine.ISearchEngine;
 import com.illustrationfinder.process.searchengine.google.GoogleSearchParameters;
 import com.illustrationfinder.process.searchengine.google.GoogleSearchResults;
+import com.jhlabs.image.*;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -35,7 +42,7 @@ import java.awt.image.BufferedImage;
 public class IllustrationFinder {
     private IPostProcessor postProcessor;
     private ISearchEngine<GoogleSearchParameters, GoogleSearchResults> searchEngine;
-    private IImageProcessor<BufferedImage> imageProcessor;
+    private IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor;
 
     public IllustrationFinder() {
         //
@@ -57,11 +64,59 @@ public class IllustrationFinder {
         this.searchEngine = searchEngine;
     }
 
-    public IImageProcessor<BufferedImage> getImageProcessor() {
+    public IImageProcessor<BufferedImage, BufferedImageOp> getImageProcessor() {
         return imageProcessor;
     }
 
-    public void setImageProcessor(IImageProcessor<BufferedImage> imageProcessor) {
+    public void setImageProcessor(IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor) {
         this.imageProcessor = imageProcessor;
+    }
+
+    public List<BufferedImage> getImages(URL url) throws IOException {
+        // Extract the keywords
+        this.postProcessor.setUrl(url);
+        final List<String> keywords = this.postProcessor.generateKeywords();
+
+        // Search for them on the search engine
+        final GoogleSearchParameters parameters = new GoogleSearchParameters();
+        final List<GoogleSearchResults> results = new ArrayList<>();
+        for(int idx = 0; idx < 4; idx++) {
+            parameters.setKeywords(keywords.get(idx));
+            parameters.setDomain(GoogleSearchParameters.Domain.IMAGES);
+            results.add(this.searchEngine.search(parameters));
+        }
+
+        // Extract 4 images
+        final List<BufferedImage> sourceImages = new ArrayList<>();
+        for(int idx = 0; idx < 4; idx++) {
+            final BufferedImage image = ImageIO.read(new URL(results.get(idx).getResults().get(0)));
+
+            sourceImages.add(this.imageProcessor.process(image));
+        }
+
+        return sourceImages;
+    }
+
+    public List<BufferedImage> getProcessedImages(BufferedImage source) {
+        final List<BufferedImage> images = new ArrayList<>();
+
+        this.imageProcessor.setAutomaticFilter(false);
+
+        this.imageProcessor.setFilter(new ContrastFilter());
+        images.add(this.imageProcessor.process(source));
+
+        this.imageProcessor.setFilter(new KaleidoscopeFilter());
+        images.add(this.imageProcessor.process(source));
+
+        this.imageProcessor.setFilter(new DiffuseFilter());
+        images.add(this.imageProcessor.process(source));
+
+        this.imageProcessor.setFilter(new PinchFilter());
+        images.add(this.imageProcessor.process(source));
+
+        this.imageProcessor.setFilter(new InvertFilter());
+        images.add(this.imageProcessor.process(source));
+
+        return images;
     }
 }

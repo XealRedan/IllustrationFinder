@@ -21,9 +21,13 @@ package com.illustrationfinder.process.post;
  */
 
 
+import java.net.URL;
+import java.util.List;
+
 /**
  * Interface implemented by all post processors
  */
 public interface IPostProcessor {
-    String generateKeywords();
+    void setUrl(URL url);
+    List<String> generateKeywords();
 }
