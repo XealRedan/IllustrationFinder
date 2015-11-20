@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by Alexandre on 19/11/2015.
@@ -15,7 +16,7 @@ public class HtmlPostProcessorTest {
         final HtmlPostProcessor htmlPostProcessor = new HtmlPostProcessor();
         htmlPostProcessor.setUrl(new URL("http://www.hankerspace.com/fr/injection-de-code-a-froid-dans-un-executable-windows/"));
 
-        final String keywords = htmlPostProcessor.generateKeywords();
+        final List<String> keywords = htmlPostProcessor.generateKeywords();
 
         System.out.println(keywords);
     }
