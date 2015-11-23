@@ -89,9 +89,14 @@ public class IllustrationFinder {
         // Extract 4 images
         final List<BufferedImage> sourceImages = new ArrayList<>();
         for(int idx = 0; idx < 4; idx++) {
-            final BufferedImage image = ImageIO.read(new URL(results.get(idx).getResults().get(0)));
+            try {
+                final BufferedImage image = ImageIO.read(new URL(results.get(idx).getResults().get(0)));
 
-            sourceImages.add(this.imageProcessor.process(image));
+                sourceImages.add(this.imageProcessor.process(image));
+            } catch (IOException e) {
+                // TODO
+                e.printStackTrace();
+            }
         }
 
         return sourceImages;

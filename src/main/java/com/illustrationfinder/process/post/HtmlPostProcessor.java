@@ -41,7 +41,7 @@ import java.util.*;
 public class HtmlPostProcessor implements IPostProcessor {
 
     private static final String PUNCTUATION_REGEX = "[\\.\\?!\\+\\-,;:/\\\\=_|§]+";
-    private static final String WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX = "\\b[\\w']{1,4}\\b";
+    private static final String WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX = "\\b[\\u00E0-\\u00FC\\w']{1,4}\\b";
     private static final String EXCESSIVE_SPACING_REGEX = "\\s{2,}";
 
     private static final Integer MINIMUM_KEYWORDS_COUNT = 4;

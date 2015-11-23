@@ -23,15 +23,19 @@ package com.illustrationfinder;
 
 import com.illustrationfinder.process.image.BufferedImageProcessor;
 import com.illustrationfinder.process.image.IImageProcessor;
-import com.illustrationfinder.process.post.IPostProcessor;
 import com.illustrationfinder.process.post.HtmlPostProcessor;
+import com.illustrationfinder.process.post.IPostProcessor;
 import com.illustrationfinder.process.searchengine.google.GoogleSearchEngine;
-import com.illustrationfinder.process.searchengine.google.GoogleSearchParameters;
-import com.illustrationfinder.process.searchengine.google.GoogleSearchResults;
+import org.junit.Test;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.util.List;
 
@@ -39,10 +43,13 @@ import java.util.List;
  *
  */
 public class IllustrationFinderTest {
+    @Test
     public void testIllustrationFinder() throws IOException {
         final IPostProcessor postProcessor = new HtmlPostProcessor();
         final GoogleSearchEngine searchEngine = new GoogleSearchEngine();
         final IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor = new BufferedImageProcessor();
+
+        imageProcessor.setPreferredSize(new Dimension(512, 512));
 
         final IllustrationFinder illustrationFinder = new IllustrationFinder();
         illustrationFinder.setPostProcessor(postProcessor);
@@ -51,6 +58,11 @@ public class IllustrationFinderTest {
 
         final List<BufferedImage> images = illustrationFinder.getImages(new URL("http://www.hankerspace.com/fr/injection-de-code-a-froid-dans-un-executable-windows/"));
 
+        int idx = 0;
+        for(BufferedImage img : images) {
+            ImageIO.write(img, "PNG", new File("out/image_" + idx + ".png"));
+            idx++;
+        }
 
     }
 }

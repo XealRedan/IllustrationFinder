@@ -21,6 +21,8 @@ package com.illustrationfinder.process.image;
  */
 
 
+import java.awt.*;
+
 /**
  * Interface implemented by all images processors
  */
@@ -36,6 +38,12 @@ public interface IImageProcessor<ImageType, ImageFilter> {
      * @param filter the filter to use
      */
     void setFilter(ImageFilter filter);
+
+    /**
+     * Sets the preferred size of the target image
+     * @param preferredSize the preferred size
+     */
+    void setPreferredSize(Dimension preferredSize);
 
     /**
      * Process an image
