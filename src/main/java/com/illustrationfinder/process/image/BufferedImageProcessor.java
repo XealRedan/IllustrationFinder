@@ -84,7 +84,6 @@ public class BufferedImageProcessor implements IImageProcessor<BufferedImage, Bu
             final GaussianFilter gaussianFilter = new GaussianFilter();
             gaussianFilter.setRadius(10);
 
-            // TODO Add a tolerance margin
             if(targetRatio > ratio + (1d + toleranceMargin)) {
                 // If the target image is wider (in proportion) than the source image
                 final Image centered = image.getScaledInstance((int) (image.getWidth() * this.preferredSize.getHeight() / image.getHeight()), (int)this.preferredSize.getHeight(), Image.SCALE_SMOOTH);

@@ -41,7 +41,7 @@ import java.util.List;
  *
  */
 public class IllustrationFinder {
-    private static final int NUMBER_OF_IMAGES = 5;
+    private static final int NUMBER_OF_IMAGES = 6;
 
     private IPostProcessor postProcessor;
     private ISearchEngine<GoogleSearchParameters, GoogleSearchResults> searchEngine;

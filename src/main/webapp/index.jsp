@@ -59,39 +59,71 @@
             <label for="input-url">URL</label>
             <input class="form-control" type="text" id="input-url" name="url"/>
         </div>
+        <div class="form-group">
+            <label for="preferred-width">Width</label>
+            <input class="form-control" type="text" id="preferred-width" name="preferred-width" value="512" />
+            <label for="preferred-height">Height</label>
+            <input class="form-control" type="text" id="preferred-height" name="preferred-height" value="512" />
+        </div>
         <button class="btn btn-default" type="submit">Find illustrations</button>
     </form>
 </div>
 <div class="container">
-    <%
-        final String url = request.getParameter("url");
-        if (url != null) {
-            final IPostProcessor postProcessor = new HtmlPostProcessor();
-            final GoogleSearchEngine searchEngine = new GoogleSearchEngine();
-            final IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor = new BufferedImageProcessor();
+    <div class="row">
+        <%
+            final String url = request.getParameter("url");
+            int width, height;
 
-            imageProcessor.setPreferredSize(new Dimension(512, 512));
-
-            final IllustrationFinder illustrationFinder = new IllustrationFinder();
-            illustrationFinder.setPostProcessor(postProcessor);
-            illustrationFinder.setSearchEngine(searchEngine);
-            illustrationFinder.setImageProcessor(imageProcessor);
-
-            final List<BufferedImage> images = illustrationFinder.getImages(new URL(url));
-
-            for (BufferedImage image : images) {
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(image, "JPG", baos);
-                baos.flush();
-                final byte[] imageInByteArray = baos.toByteArray();
-                baos.close();
-                final String b64 = DatatypeConverter.printBase64Binary(imageInByteArray);
-    %>
-                <img class="img-responsive img-rounded" src="data:image/jpg;base64, <%=b64%>" alt="Invalid picture" />
-    <%
+            // Read the width from parameters
+            try {
+                if(request.getParameter("preferred-width") != null)
+                    width = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-width"))));
+                else
+                    width = 512;
+            } catch (NumberFormatException e) {
+                width = 512;
             }
-        }
-    %>
+
+            // Read the height from parameters
+            try {
+                if(request.getParameter("preferred-height") != null)
+                    height = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-height"))));
+                else
+                    height = 512;
+            } catch (NumberFormatException e) {
+                height = 512;
+            }
+
+            if (url != null) {
+                final IPostProcessor postProcessor = new HtmlPostProcessor();
+                final GoogleSearchEngine searchEngine = new GoogleSearchEngine();
+                final IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor = new BufferedImageProcessor();
+
+                imageProcessor.setPreferredSize(new Dimension(width, height));
+
+                final IllustrationFinder illustrationFinder = new IllustrationFinder();
+                illustrationFinder.setPostProcessor(postProcessor);
+                illustrationFinder.setSearchEngine(searchEngine);
+                illustrationFinder.setImageProcessor(imageProcessor);
+
+                final List<BufferedImage> images = illustrationFinder.getImages(new URL(url));
+
+                for (BufferedImage image : images) {
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "png", baos);
+                    baos.flush();
+                    final byte[] imageInByteArray = baos.toByteArray();
+                    baos.close();
+                    final String b64 = DatatypeConverter.printBase64Binary(imageInByteArray);
+        %>
+                    <div class="col-sm-6">
+                        <img class="img-responsive img-rounded" src="data:image/png;base64, <%=b64%>" alt="Picture" />
+                    </div>
+        <%
+                }
+            }
+        %>
+    </div>
 </div>
 </body>
 </html>
