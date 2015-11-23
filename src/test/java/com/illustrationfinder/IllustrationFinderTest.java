@@ -44,7 +44,7 @@ import java.util.List;
  *
  */
 public class IllustrationFinderTest {
-    @Test
+//    @Test
     public void testIllustrationFinder() throws IOException {
         final IPostProcessor postProcessor = new HtmlPostProcessor();
         final GoogleSearchEngine searchEngine = new GoogleSearchEngine();

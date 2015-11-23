@@ -30,7 +30,7 @@ import java.io.IOException;
  *
  */
 public class GoogleSearchEngineTest {
-    @Test
+//    @Test
     public void testSearch() throws IOException {
         final GoogleSearchParameters parameters = new GoogleSearchParameters();
         parameters.setKeywords("Tomato");

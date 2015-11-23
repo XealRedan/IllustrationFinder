@@ -18,6 +18,5 @@
     <div class="container">
         Illustration Finder
     </div>
-  $END$
   </body>
 </html>
