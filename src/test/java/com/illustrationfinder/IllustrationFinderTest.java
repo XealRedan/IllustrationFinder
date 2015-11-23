@@ -37,6 +37,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,13 +57,33 @@ public class IllustrationFinderTest {
         illustrationFinder.setSearchEngine(searchEngine);
         illustrationFinder.setImageProcessor(imageProcessor);
 
-        final List<BufferedImage> images = illustrationFinder.getImages(new URL("http://www.hankerspace.com/fr/injection-de-code-a-froid-dans-un-executable-windows/"));
+        final List<String> articles = new ArrayList<>();
 
-        int idx = 0;
-        for(BufferedImage img : images) {
-            ImageIO.write(img, "PNG", new File("out/image_" + idx + ".png"));
-            idx++;
+        articles.add("http://www.hankerspace.com/fr/injection-de-code-a-froid-dans-un-executable-windows/");
+        articles.add("http://www.hankerspace.com/fr/creer-un-trigger-bot-pour-counter-strike/");
+        articles.add("http://www.hankerspace.com/fr/javascript-la-verite-sur-les-operateurs-et/");
+        articles.add("http://www.hankerspace.com/fr/keylogger-et-mouselogger-en-c/");
+        articles.add("http://www.hankerspace.com/fr/windows-hooks-et-dlls/");
+        articles.add("http://www.hankerspace.com/fr/presentation-de-la-bibliotheque-blackbone/");
+
+        int articleIndex = 0;
+        for(String article : articles) {
+            final List<BufferedImage> images = illustrationFinder.getImages(new URL(article));
+
+            if(!new File("out/article_" + articleIndex).exists()) {
+                new File("out/article_" + articleIndex).mkdir();
+            }
+
+            int idx = 0;
+            for(BufferedImage img : images) {
+
+                ImageIO.write(img, "PNG", new File("out/article_" + articleIndex + "/image_" + idx + ".png"));
+                idx++;
+            }
+
+            articleIndex++;
         }
+
 
     }
 }

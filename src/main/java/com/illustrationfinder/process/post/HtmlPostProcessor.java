@@ -29,6 +29,7 @@ import org.jsoup.nodes.Document;
 import sun.nio.ch.IOUtil;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
@@ -41,8 +42,10 @@ import java.util.*;
 public class HtmlPostProcessor implements IPostProcessor {
 
     private static final String PUNCTUATION_REGEX = "[\\.\\?!\\+\\-,;:/\\\\=_|§]+";
-    private static final String WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX = "\\b[\\u00E0-\\u00FC\\w']{1,4}\\b";
+    private static final String WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX = "\\b[’#\\{\\}\\u00E0-\\u00FC\\w']{1,4}\\b";
     private static final String EXCESSIVE_SPACING_REGEX = "\\s{2,}";
+
+    private static final int MINIMUM_WORD_LENGTH = 4;
 
     private static final Integer MINIMUM_KEYWORDS_COUNT = 4;
 
@@ -71,85 +74,95 @@ public class HtmlPostProcessor implements IPostProcessor {
 
     @Override
     public List<String> generateKeywords() {
+        // TODO If two words are always close to each other, they should be considered as an expression and managed like one word
         if(this.url == null)
             return null;
 
         try {
             // Retrieve the document and store it temporary
-            final String rawText = IOUtils.toString(this.url.openStream());
+            try (final InputStream stream = this.url.openStream()) {
+                final String rawText = IOUtils.toString(stream);
 
-            // Retrieve useful HTML data
-            final Document document = Jsoup.parse(rawText);
+                // Retrieve useful HTML data
+                final Document document = Jsoup.parse(rawText);
 
-            String htmlTitle = document.title();
-            String htmlKeywords = document.select("meta[name=keywords]").text();
-            String htmlDescription = document.select("meta[name=description]").text();
+                String htmlTitle = document.title();
+                String htmlKeywords = document.select("meta[name=keywords]").text();
+                String htmlDescription = document.select("meta[name=description]").text();
 
-            // Extract the content of the raw text
-            String content = ArticleExtractor.getInstance().getText(rawText);
+                // Extract the content of the raw text
+                String content = ArticleExtractor.getInstance().getText(rawText);
 
-            // Now we apply a simple algorithm to get keywords
-            //  1) We remove all punctuation marks from the title
-            //  2) We remove all words with less than 4 characters
-            //  3) We remove excessive spacing and tabulations
+                // Now we apply a simple algorithm to get keywords
+                //  1) We remove all punctuation marks from the title
+                //  2) We remove all words with less than 4 characters
+                //  3) We remove excessive spacing and tabulations
 
-            htmlTitle = htmlTitle.toLowerCase();
-            htmlTitle = htmlTitle.replaceAll(PUNCTUATION_REGEX, "");
-            htmlTitle = htmlTitle.replaceAll(WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX, "");
-            htmlTitle = htmlTitle.replaceAll(EXCESSIVE_SPACING_REGEX, " ");
+                htmlTitle = htmlTitle.toLowerCase();
+                htmlTitle = htmlTitle.replaceAll(PUNCTUATION_REGEX, "");
+                htmlTitle = htmlTitle.replaceAll(WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX, "");
+                htmlTitle = htmlTitle.replaceAll(EXCESSIVE_SPACING_REGEX, " ");
 
-            final List<String> keywords = new ArrayList<>();
-            keywords.addAll(Arrays.asList(htmlTitle.split(" ")));
-
-            // If there is enough keywords, we return
-            if(keywords.size() >= MINIMUM_KEYWORDS_COUNT) {
-                return keywords;
-            } else {
-                // Otherwise, we look for more keywords from the text by taking the more frequent words
-                content = content.toLowerCase();
-                content = content.replaceAll(PUNCTUATION_REGEX, "");
-                content = content.replaceAll(WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX, "");
-                content = content.replaceAll(EXCESSIVE_SPACING_REGEX, " ");
-
-                final Map<String, Integer> frequencies = new HashMap<>();
-                final String[] words = content.split(" ");
-
-                // Count word frequencies
-                for(final String word : words) {
-                    if(frequencies.containsKey(word)) {
-                        frequencies.put(word, frequencies.get(word) + 1);
-                    } else {
-                        frequencies.put(word, 1);
+                final List<String> keywords = new ArrayList<>();
+                final List<String> keywordsList = Arrays.asList(htmlTitle.split(" "));
+                for(String tmp : keywordsList) {
+                    if(tmp.length() >= MINIMUM_WORD_LENGTH) {
+                        keywords.add(tmp);
                     }
                 }
 
-                // Sort the words per frequency
-                final SortedMap<Integer, HashSet<String>> sortedWords = new TreeMap<>();
+                // If there is enough keywords, we return
+                if(keywords.size() >= MINIMUM_KEYWORDS_COUNT) {
+                    return keywords;
+                } else {
+                    // Otherwise, we look for more keywords from the text by taking the more frequent words
+                    content = content.toLowerCase();
+                    content = content.replaceAll(PUNCTUATION_REGEX, "");
+                    content = content.replaceAll(WORD_WITH_LESS_THAN_4_CHARACTERS_REGEX, "");
+                    content = content.replaceAll(EXCESSIVE_SPACING_REGEX, " ");
 
-                for(Map.Entry<String, Integer> entry : frequencies.entrySet()) {
-                    if(sortedWords.containsKey(entry.getValue())) {
-                        sortedWords.get(entry.getValue()).add(entry.getKey());
-                    } else {
-                        final HashSet<String> set = new HashSet<>();
-                        set.add(entry.getKey());
-                        sortedWords.put(entry.getValue(), set);
+                    final Map<String, Integer> frequencies = new HashMap<>();
+                    final String[] words = content.split(" ");
+
+                    // Count word frequencies
+                    for(final String word : words) {
+                        if(frequencies.containsKey(word)) {
+                            frequencies.put(word, frequencies.get(word) + 1);
+                        } else {
+                            frequencies.put(word, 1);
+                        }
                     }
-                }
 
-                // Add the most frequent words until we reach the minimu keywords count
-                while(keywords.size() < MINIMUM_KEYWORDS_COUNT) {
-                    final HashSet<String> set = sortedWords.get(sortedWords.lastKey());
-                    final String keyword = set.iterator().next();
+                    // Sort the words per frequency
+                    final SortedMap<Integer, HashSet<String>> sortedWords = new TreeMap<>();
 
-                    set.remove(keyword);
-                    if(set.size() == 0) {
-                        sortedWords.remove(sortedWords.lastKey());
+                    for(Map.Entry<String, Integer> entry : frequencies.entrySet()) {
+                        if(sortedWords.containsKey(entry.getValue())) {
+                            sortedWords.get(entry.getValue()).add(entry.getKey());
+                        } else {
+                            final HashSet<String> set = new HashSet<>();
+                            set.add(entry.getKey());
+                            sortedWords.put(entry.getValue(), set);
+                        }
                     }
 
-                    keywords.add(keyword);
-                }
+                    // Add the most frequent words until we reach the minimu keywords count
+                    while(keywords.size() < MINIMUM_KEYWORDS_COUNT) {
+                        final HashSet<String> set = sortedWords.get(sortedWords.lastKey());
+                        final String keyword = set.iterator().next();
 
-                return keywords;
+                        set.remove(keyword);
+                        if(set.size() == 0) {
+                            sortedWords.remove(sortedWords.lastKey());
+                        }
+
+                        if(keyword.length() > MINIMUM_WORD_LENGTH) {
+                            keywords.add(keyword);
+                        }
+                    }
+
+                    return keywords;
+                }
             }
         } catch (BoilerpipeProcessingException e) {
             // TODO

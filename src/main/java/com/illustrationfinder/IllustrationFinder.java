@@ -28,6 +28,7 @@ import com.illustrationfinder.process.searchengine.google.GoogleSearchParameters
 import com.illustrationfinder.process.searchengine.google.GoogleSearchResults;
 import com.jhlabs.image.*;
 
+import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
@@ -40,6 +41,8 @@ import java.util.List;
  *
  */
 public class IllustrationFinder {
+    private static final int NUMBER_OF_IMAGES = 5;
+
     private IPostProcessor postProcessor;
     private ISearchEngine<GoogleSearchParameters, GoogleSearchResults> searchEngine;
     private IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor;
@@ -88,15 +91,29 @@ public class IllustrationFinder {
 
         // Extract 4 images
         final List<BufferedImage> sourceImages = new ArrayList<>();
-        for(int idx = 0; idx < 4; idx++) {
-            try {
-                final BufferedImage image = ImageIO.read(new URL(results.get(idx).getResults().get(0)));
 
-                sourceImages.add(this.imageProcessor.process(image));
-            } catch (IOException e) {
-                // TODO
-                e.printStackTrace();
-            }
+        int addedImages = 0;
+        int idx = 0;
+        while(addedImages < NUMBER_OF_IMAGES) {
+                boolean added = false;
+
+                int i = idx / results.size();
+                while(!added && i < results.get(idx % results.size()).getResults().size()) {
+                    try {
+                        final BufferedImage image = ImageIO.read(new URL(results.get(idx % results.size()).getResults().get(i)));
+
+                        if(image != null) {
+                            sourceImages.add(this.imageProcessor.process(image));
+                            added = true;
+                            addedImages++;
+                        }
+                    } catch (IIOException e) {
+                        // Failed to download an image, it happens
+                    }
+
+                    i++;
+                }
+            idx++;
         }
 
         return sourceImages;
