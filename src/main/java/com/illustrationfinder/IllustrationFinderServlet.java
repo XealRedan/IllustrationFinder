@@ -11,6 +11,6 @@ import java.io.IOException;
  */
 public class IllustrationFinderServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+        this.getServletContext().getRequestDispatcher("index.jsp").forward(request, response);
     }
 }
