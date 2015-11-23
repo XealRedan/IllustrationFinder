@@ -1,3 +1,18 @@
+<%@ page import="com.illustrationfinder.process.post.IPostProcessor" %>
+<%@ page import="com.illustrationfinder.process.searchengine.google.GoogleSearchEngine" %>
+<%@ page import="com.illustrationfinder.process.post.HtmlPostProcessor" %>
+<%@ page import="java.awt.image.BufferedImage" %>
+<%@ page import="java.awt.image.BufferedImageOp" %>
+<%@ page import="com.illustrationfinder.process.image.BufferedImageProcessor" %>
+<%@ page import="com.illustrationfinder.process.image.IImageProcessor" %>
+<%@ page import="java.awt.Dimension" %>
+<%@ page import="com.illustrationfinder.IllustrationFinder" %>
+<%@ page import="java.net.URL" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.io.ByteArrayOutputStream" %>
+<%@ page import="javax.imageio.ImageIO" %>
+<%@ page import="javax.xml.bind.DatatypeConverter" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: Alexandre
@@ -7,24 +22,57 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-  <head>
+<head>
     <title>Illustration Finder</title>
     <link rel='stylesheet' href='webjars/bootstrap/3.3.5/css/bootstrap.min.css'>
     <link rel='stylesheet' href='webjars/bootstrap/3.3.5/css/bootstrap-theme.min.css'>
     <script type='text/javascript' src='webjars/jquery/2.1.4/jquery.min.js'></script>
     <script type='text/javascript' src='webjars/bootstrap/3.3.5/js/bootstrap.min.js'></script>
-  </head>
-  <body>
-    <div class="container">
-        <h1>Illustration Finder</h1>
-        <p class="lead">Easily find illustration pictures for your articles</p>
-        <form role="form">
-          <div class="form-group">
+</head>
+<body>
+<div class="container">
+    <h1>Illustration Finder</h1>
+
+    <p class="lead">Easily find illustration pictures for your articles</p>
+
+    <form role="form" method="get">
+        <div class="form-group">
             <label for="input-url">URL</label>
-            <input class="form-control" type="text" id="input-url" />
-          </div>
-          <button class="btn btn-default" type="submit">Find illustrations</button>
-        </form>
-    </div>
-  </body>
+            <input class="form-control" type="text" id="input-url" name="url"/>
+        </div>
+        <button class="btn btn-default" type="submit">Find illustrations</button>
+    </form>
+</div>
+<div class="container">
+    <%
+        final String url = request.getParameter("url");
+        if (url != null) {
+            final IPostProcessor postProcessor = new HtmlPostProcessor();
+            final GoogleSearchEngine searchEngine = new GoogleSearchEngine();
+            final IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor = new BufferedImageProcessor();
+
+            imageProcessor.setPreferredSize(new Dimension(512, 512));
+
+            final IllustrationFinder illustrationFinder = new IllustrationFinder();
+            illustrationFinder.setPostProcessor(postProcessor);
+            illustrationFinder.setSearchEngine(searchEngine);
+            illustrationFinder.setImageProcessor(imageProcessor);
+
+            final List<BufferedImage> images = illustrationFinder.getImages(new URL(url));
+
+            for (BufferedImage image : images) {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "JPG", baos);
+                baos.flush();
+                final byte[] imageInByteArray = baos.toByteArray();
+                baos.close();
+                final String b64 = DatatypeConverter.printBase64Binary(imageInByteArray);
+    %>
+                <img class="img-responsive img-rounded" src="data:image/jpg;base64, <%=b64%>" alt="Invalid picture" />
+    <%
+            }
+        }
+    %>
+</div>
+</body>
 </html>

@@ -12,6 +12,10 @@
 
     <servlet-mapping>
         <servlet-name>IllustrationFinder</servlet-name>
-        <url-pattern>/if</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
+    
+    <welcome-file-list>
+        <welcome-file>IllustrationFinder</welcome-file>
+    </welcome-file-list>
 </web-app>
