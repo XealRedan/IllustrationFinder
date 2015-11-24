@@ -47,7 +47,9 @@ public class GoogleSearchResults implements ISearchEngineResults {
 
         final List<String> results = new ArrayList<>();
 
-        this.responseData.getResults().forEach(r -> results.add(r.getUrl()));
+        for(Result r : this.responseData.getResults()) {
+            results.add(r.getUrl());
+        }
 
         return results;
     }

@@ -6,14 +6,14 @@
 
     <groupId>com.illustrationfinder</groupId>
     <artifactId>IllustrationFinder</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>war</packaging>
 
     <name>Illustration finder</name>
     <description>Easily find illustration for your posts</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
         <spring.version>4.2.3.RELEASE</spring.version>
     </properties>
 
@@ -31,6 +31,18 @@
             <email>alexandre.lombard@live.fr</email>
         </developer>
     </developers>
+
+    <profiles>
+        <profile>
+            <id>RemoteDeploy</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <tomcat.deploy.url>http://www.hankerspace.com:8080/manager/text</tomcat.deploy.url>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -66,6 +78,8 @@
                 <version>2.2</version>
                 <configuration>
                     <path>/IllustrationFinder</path>
+                    <server>tomcat-remote</server>
+                    <url>${tomcat.deploy.url}</url>
                 </configuration>
             </plugin>
 
@@ -214,6 +228,13 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.13</version>
         </dependency>
 
         <!-- JUnit tests -->
