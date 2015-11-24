@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%--
   #%L
   Illustration finder
@@ -17,22 +18,6 @@
   limitations under the License.
   #L%
   --%>
-<%@ page import="com.illustrationfinder.process.post.IPostProcessor" %>
-<%@ page import="com.illustrationfinder.process.searchengine.google.GoogleSearchEngine" %>
-<%@ page import="com.illustrationfinder.process.post.HtmlPostProcessor" %>
-<%@ page import="java.awt.image.BufferedImage" %>
-<%@ page import="java.awt.image.BufferedImageOp" %>
-<%@ page import="com.illustrationfinder.process.image.BufferedImageProcessor" %>
-<%@ page import="com.illustrationfinder.process.image.IImageProcessor" %>
-<%@ page import="java.awt.Dimension" %>
-<%@ page import="com.illustrationfinder.IllustrationFinder" %>
-<%@ page import="java.net.URL" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.io.ByteArrayOutputStream" %>
-<%@ page import="javax.imageio.ImageIO" %>
-<%@ page import="javax.xml.bind.DatatypeConverter" %>
-<%@ page import="org.apache.commons.validator.UrlValidator" %>
-<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -42,45 +27,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    String url = request.getParameter("url");
-    if(url != null)
-        url = StringEscapeUtils.escapeHtml4(url);
-    int width, height;
-
-    // Read the width from parameters
-    try {
-        String preferredWidthStr = request.getParameter("preferred-width");
-        if(preferredWidthStr != null) {
-            preferredWidthStr = StringEscapeUtils.escapeHtml4(preferredWidthStr);
-            width = Math.max(0, Math.min(1024, Integer.parseInt(preferredWidthStr)));
-        }
-        else
-            width = 512;
-    } catch (NumberFormatException e) {
-        width = 512;
-    }
-
-    // Read the height from parameters
-    try {
-        String preferredHeightStr = request.getParameter("preferred-height");
-        if(preferredHeightStr != null) {
-            preferredHeightStr = StringEscapeUtils.escapeHtml4(preferredHeightStr);
-            height = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-height"))));
-        }
-        else
-            height = 512;
-    } catch (NumberFormatException e) {
-        height = 512;
-    }
-
-    // Validate URL
-    boolean isUrlValid = false;
-    final UrlValidator urlValidator = new UrlValidator(new String[]{"http", "https"});
-    if(url != null && urlValidator.isValid(url)) {
-        isUrlValid = true;
-    }
-%>
 <html>
 <head>
     <title>Illustration Finder</title>
@@ -96,24 +42,22 @@
     <p class="lead">Easily find illustration pictures for your articles</p>
 
     <form role="form" method="get">
-        <%
-            if(url != null && !isUrlValid) {
-                %>
+        <c:choose>
+            <c:when test="${isUrlValid != null && isUrlValid == false}">
                 <div class="form-group has-error has-feedback">
                     <label for="input-url">URL</label>
-                    <input class="form-control" type="text" id="input-url" name="url" value="<%=url%>"/>
+                    <input class="form-control" type="text" id="input-url" name="url" value="${pUrl}"/>
                     <span class="glyphicon glyphicon-remove form-control-feedback"></span>
                 </div>
-                <%
-            } else {
-                %>
+            </c:when>
+            <c:when test="${isUrlValid == null}">
                 <div class="form-group">
                     <label for="input-url">URL</label>
                     <input class="form-control" type="text" id="input-url" name="url"/>
                 </div>
-                <%
-            }
-        %>
+            </c:when>
+        </c:choose>
+
         <div class="form-group">
             <label for="preferred-width">Width</label>
             <input class="form-control" type="text" id="preferred-width" name="preferred-width" value="512" />
@@ -125,38 +69,13 @@
 </div>
 <div class="container">
     <div class="row">
-        <%
-            if (url != null && isUrlValid) {
-                final IPostProcessor postProcessor = new HtmlPostProcessor();
-                final GoogleSearchEngine searchEngine = new GoogleSearchEngine();
-                final IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor = new BufferedImageProcessor();
-
-                imageProcessor.setPreferredSize(new Dimension(width, height));
-
-                final IllustrationFinder illustrationFinder = new IllustrationFinder();
-                illustrationFinder.setPostProcessor(postProcessor);
-                illustrationFinder.setSearchEngine(searchEngine);
-                illustrationFinder.setImageProcessor(imageProcessor);
-
-                final List<BufferedImage> images = illustrationFinder.getImages(new URL(url));
-
-                if(images != null) {
-                    for (BufferedImage image : images) {
-                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write(image, "png", baos);
-                        baos.flush();
-                        final byte[] imageInByteArray = baos.toByteArray();
-                        baos.close();
-                        final String b64 = DatatypeConverter.printBase64Binary(imageInByteArray);
-                        %>
-                        <div class="col-sm-6">
-                            <img class="img-responsive img-rounded" src="data:image/png;base64, <%=b64%>" alt="Picture" />
-                        </div>
-                        <%
-                    }
-                }
-            }
-        %>
+        <c:if test="${images != null}">
+            <c:forEach var="image" items="${images}">
+                <div class="col-sm-6">
+                    <img class="img-responsive img-rounded" src="data:image/png;base64, ${image}" alt="Picture" />
+                </div>
+            </c:forEach>
+        </c:if>
     </div>
 </div>
 </body>
