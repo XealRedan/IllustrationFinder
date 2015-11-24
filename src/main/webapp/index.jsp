@@ -140,18 +140,20 @@
 
                 final List<BufferedImage> images = illustrationFinder.getImages(new URL(url));
 
-                for (BufferedImage image : images) {
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ImageIO.write(image, "png", baos);
-                    baos.flush();
-                    final byte[] imageInByteArray = baos.toByteArray();
-                    baos.close();
-                    final String b64 = DatatypeConverter.printBase64Binary(imageInByteArray);
-        %>
-                    <div class="col-sm-6">
-                        <img class="img-responsive img-rounded" src="data:image/png;base64, <%=b64%>" alt="Picture" />
-                    </div>
-        <%
+                if(images != null) {
+                    for (BufferedImage image : images) {
+                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", baos);
+                        baos.flush();
+                        final byte[] imageInByteArray = baos.toByteArray();
+                        baos.close();
+                        final String b64 = DatatypeConverter.printBase64Binary(imageInByteArray);
+                        %>
+                        <div class="col-sm-6">
+                            <img class="img-responsive img-rounded" src="data:image/png;base64, <%=b64%>" alt="Picture" />
+                        </div>
+                        <%
+                    }
                 }
             }
         %>

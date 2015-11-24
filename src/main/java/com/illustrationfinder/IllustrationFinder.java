@@ -80,6 +80,9 @@ public class IllustrationFinder {
         this.postProcessor.setUrl(url);
         final List<String> keywords = this.postProcessor.generateKeywords();
 
+        if(keywords == null)
+            return null;
+
         // Search for them on the search engine
         final GoogleSearchParameters parameters = new GoogleSearchParameters();
         final List<GoogleSearchResults> results = new ArrayList<>();
