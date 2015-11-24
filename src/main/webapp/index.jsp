@@ -31,6 +31,7 @@
 <%@ page import="java.io.ByteArrayOutputStream" %>
 <%@ page import="javax.imageio.ImageIO" %>
 <%@ page import="javax.xml.bind.DatatypeConverter" %>
+<%@ page import="org.apache.commons.validator.UrlValidator" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -40,6 +41,37 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    final String url = request.getParameter("url");
+    int width, height;
+
+    // Read the width from parameters
+    try {
+        if(request.getParameter("preferred-width") != null)
+            width = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-width"))));
+        else
+            width = 512;
+    } catch (NumberFormatException e) {
+        width = 512;
+    }
+
+    // Read the height from parameters
+    try {
+        if(request.getParameter("preferred-height") != null)
+            height = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-height"))));
+        else
+            height = 512;
+    } catch (NumberFormatException e) {
+        height = 512;
+    }
+
+    // Validate URL
+    boolean isUrlValid = false;
+    final UrlValidator urlValidator = new UrlValidator(new String[]{"http", "https"});
+    if(url != null && urlValidator.isValid(url)) {
+        isUrlValid = true;
+    }
+%>
 <html>
 <head>
     <title>Illustration Finder</title>
@@ -55,10 +87,24 @@
     <p class="lead">Easily find illustration pictures for your articles</p>
 
     <form role="form" method="get">
-        <div class="form-group">
-            <label for="input-url">URL</label>
-            <input class="form-control" type="text" id="input-url" name="url"/>
-        </div>
+        <%
+            if(url != null && !isUrlValid) {
+                %>
+                <div class="form-group has-error has-feedback">
+                    <label for="input-url">URL</label>
+                    <input class="form-control" type="text" id="input-url" name="url" value="<%=url%>"/>
+                    <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                </div>
+                <%
+            } else {
+                %>
+                <div class="form-group">
+                    <label for="input-url">URL</label>
+                    <input class="form-control" type="text" id="input-url" name="url"/>
+                </div>
+                <%
+            }
+        %>
         <div class="form-group">
             <label for="preferred-width">Width</label>
             <input class="form-control" type="text" id="preferred-width" name="preferred-width" value="512" />
@@ -71,30 +117,7 @@
 <div class="container">
     <div class="row">
         <%
-            final String url = request.getParameter("url");
-            int width, height;
-
-            // Read the width from parameters
-            try {
-                if(request.getParameter("preferred-width") != null)
-                    width = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-width"))));
-                else
-                    width = 512;
-            } catch (NumberFormatException e) {
-                width = 512;
-            }
-
-            // Read the height from parameters
-            try {
-                if(request.getParameter("preferred-height") != null)
-                    height = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-height"))));
-                else
-                    height = 512;
-            } catch (NumberFormatException e) {
-                height = 512;
-            }
-
-            if (url != null) {
+            if (url != null && isUrlValid) {
                 final IPostProcessor postProcessor = new HtmlPostProcessor();
                 final GoogleSearchEngine searchEngine = new GoogleSearchEngine();
                 final IImageProcessor<BufferedImage, BufferedImageOp> imageProcessor = new BufferedImageProcessor();
