@@ -32,6 +32,7 @@
 <%@ page import="javax.imageio.ImageIO" %>
 <%@ page import="javax.xml.bind.DatatypeConverter" %>
 <%@ page import="org.apache.commons.validator.UrlValidator" %>
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -42,13 +43,18 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    final String url = request.getParameter("url");
+    String url = request.getParameter("url");
+    if(url != null)
+        url = StringEscapeUtils.escapeHtml4(url);
     int width, height;
 
     // Read the width from parameters
     try {
-        if(request.getParameter("preferred-width") != null)
-            width = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-width"))));
+        String preferredWidthStr = request.getParameter("preferred-width");
+        if(preferredWidthStr != null) {
+            preferredWidthStr = StringEscapeUtils.escapeHtml4(preferredWidthStr);
+            width = Math.max(0, Math.min(1024, Integer.parseInt(preferredWidthStr)));
+        }
         else
             width = 512;
     } catch (NumberFormatException e) {
@@ -57,8 +63,11 @@
 
     // Read the height from parameters
     try {
-        if(request.getParameter("preferred-height") != null)
+        String preferredHeightStr = request.getParameter("preferred-height");
+        if(preferredHeightStr != null) {
+            preferredHeightStr = StringEscapeUtils.escapeHtml4(preferredHeightStr);
             height = Math.max(0, Math.min(1024, Integer.parseInt(request.getParameter("preferred-height"))));
+        }
         else
             height = 512;
     } catch (NumberFormatException e) {
