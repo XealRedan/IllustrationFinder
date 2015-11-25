@@ -24,6 +24,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <aop:aspectj-autoproxy />
-    <bean id="loggingAspect" class="com.illustrationfinder.aspects.logging.SearchLoggingAspect" />
+
+    <aop:config>
+        <aop:aspect id="loggingAspect" ref="loggingAspectBean" />
+    </aop:config>
+
+    <bean id="loggingAspectBean" class="com.illustrationfinder.aspects.logging.SearchLoggingAspect" />
 
 </beans>

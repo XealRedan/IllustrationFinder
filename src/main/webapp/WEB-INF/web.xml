@@ -37,7 +37,7 @@
 
     <servlet-mapping>
         <servlet-name>servlet-dispatcher</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/IllustrationFinder</url-pattern>
     </servlet-mapping>
 
 </web-app>
