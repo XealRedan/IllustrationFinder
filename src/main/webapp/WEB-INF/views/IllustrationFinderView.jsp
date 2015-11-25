@@ -50,7 +50,7 @@
                     <span class="glyphicon glyphicon-remove form-control-feedback"></span>
                 </div>
             </c:when>
-            <c:when test="${isUrlValid == null}">
+            <c:when test="${isUrlValid == null || isUrlValid == true}">
                 <div class="form-group">
                     <label for="input-url">URL</label>
                     <input class="form-control" type="text" id="input-url" name="url"/>

@@ -29,22 +29,19 @@ import java.util.List;
  * Illustration finder controller
  */
 @Controller
-@RequestMapping("/IllustrationFinder")
 public class IllustrationFinderController {
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView showIllustrationFinder() {
-        final ModelAndView modelAndView = new ModelAndView("/index");
-
-        return modelAndView;
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String showIllustrationFinder() {
+        return "IllustrationFinderView";
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"url", "preferred-width", "preferred-height"})
+    @RequestMapping(value = "/", method = RequestMethod.GET, params = {"url", "preferred-width", "preferred-height"})
     public ModelAndView showIllustrationFinderResults(
             ModelMap modelMap,
             @RequestParam(value = "url") String pUrl,
             @RequestParam(value = "preferred-width") String pPreferredWidth,
             @RequestParam(value = "preferred-height") String pPreferredHeight) {
-        final ModelAndView modelAndView = new ModelAndView("/index");
+        final ModelAndView modelAndView = new ModelAndView("/IllustrationFinderView");
 
         // Add the URL to attributes
         modelMap.addAttribute("pUrl", pUrl);
@@ -61,7 +58,7 @@ public class IllustrationFinderController {
             }
         }
 
-        modelMap.addAttribute("isUrlValid", true);
+        modelMap.addAttribute("isUrlValid", isUrlValid);
 
         // Get the images
         try {
