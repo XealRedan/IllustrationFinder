@@ -97,14 +97,19 @@ public class IllustrationFinder {
 
         int addedImages = 0;
         int idx = 0;
-        while(addedImages < NUMBER_OF_IMAGES) {
+        if(results.size() > 0) {
+            while(addedImages < NUMBER_OF_IMAGES) {
                 boolean added = false;
 
                 int i = idx / results.size();
-                while(!added &&
-                        results.get(idx % results.size()) != null &&
-                        results.get(idx % results.size()).getResults() != null &&
-                        i < results.get(idx % results.size()).getResults().size()) {
+
+                if(results.get(idx % results.size()) == null ||
+                        results.get(idx % results.size()).getResults() == null) {
+                    // Error...
+                    break;
+                }
+
+                while(!added  && i < results.get(idx % results.size()).getResults().size()) {
                     try {
                         final BufferedImage image = ImageIO.read(new URL(results.get(idx % results.size()).getResults().get(i)));
 
@@ -119,7 +124,8 @@ public class IllustrationFinder {
 
                     i++;
                 }
-            idx++;
+                idx++;
+            }
         }
 
         return sourceImages;
