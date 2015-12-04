@@ -101,7 +101,10 @@ public class IllustrationFinder {
                 boolean added = false;
 
                 int i = idx / results.size();
-                while(!added && i < results.get(idx % results.size()).getResults().size()) {
+                while(!added &&
+                        results.get(idx % results.size()) != null &&
+                        results.get(idx % results.size()).getResults() != null &&
+                        i < results.get(idx % results.size()).getResults().size()) {
                     try {
                         final BufferedImage image = ImageIO.read(new URL(results.get(idx % results.size()).getResults().get(i)));
 
